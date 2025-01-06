@@ -1,27 +1,28 @@
-Package: powerbiR
 Type: Package
+Package: powerbiR
 Title: An Interface to the 'Power BI REST APIs'
-Version: 0.1.0
-Authors@R: person("Christian", "Vermehren", email = "cv@cantab.net",
-    role = c("aut", "cre"))
-Description: Makes it easy to push data to 'Power BI' using R and the 'Power BI 
-    REST APIs' (see <https://docs.microsoft.com/en-us/rest/api/power-bi/>). 
-    A set of functions for turning data frames into 'Power BI' datasets and 
-    refreshing these datasets are provided. Administrative tasks such as 
-    monitoring refresh statuses and pulling metadata about workspaces and users
-    are also supported.
+Version: 0.1.0.9000
+Authors@R: 
+    person("Christian", "Vermehren", , "cv@cantab.net", role = c("aut", "cre"))
+Description: Makes it easy to push data to 'Power BI' using R and the
+    'Power BI REST APIs' (see
+    <https://docs.microsoft.com/en-us/rest/api/power-bi/>).  A set of
+    functions for turning data frames into 'Power BI' datasets and
+    refreshing these datasets are provided. Administrative tasks such as
+    monitoring refresh statuses and pulling metadata about workspaces and
+    users are also supported.
 License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.2.1
-Imports: 
-    data.table,
-    jsonlite,
-    httr,
-    utils,
-    AzureAuth
-Suggests: 
-    spelling
 Depends: 
     R (>= 4.2.0)
+Imports: 
+    AzureAuth,
+    data.table,
+    httr,
+    jsonlite,
+    utils
+Suggests: 
+    spelling
+Encoding: UTF-8
 Language: en-US
+LazyData: true
+RoxygenNote: 7.3.1
