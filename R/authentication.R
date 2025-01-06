@@ -70,15 +70,13 @@ pbi_auth <- function(tenant = Sys.getenv("PBI_TENANT"),
   if (inherits(.pbi_env$token, "try-error")) {
 
     stop(
-    "Please save your Azure tenant ID, App ID and client secret in an
-    environment variable.\n",
-    "See ?pbi_auth() for details.")
-    }
+      "Please save your Azure tenant ID, App ID and client secret in an environment variable.\n",
+      "See ?pbi_auth() for details.")
+  }
 }
 
 
 pbi_get_token <- function() {
-
 
   if(length(.pbi_env$token$credentials$expires_on) == 0) {
 
