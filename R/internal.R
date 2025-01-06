@@ -1,12 +1,12 @@
 
-get_request <- function(url, header) {
+get_request <- function(url, header, simplifyVector = FALSE) {
 
   resp <- httr::GET(url, header)
 
   if (httr::http_error(resp)) stop(httr::content(resp), call. = FALSE)
 
   resp <- httr::content(resp, "text", encoding = "UTF-8")
-  resp <- try(jsonlite::fromJSON(resp, simplifyVector = FALSE))
+  resp <- try(jsonlite::fromJSON(resp, simplifyVector = simplifyVector))
 
   if (inherits(resp, "try-error")) {
     stop("The Power BI API returned an empty value or the value could not be parsed.")

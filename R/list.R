@@ -19,22 +19,9 @@ pbi_list_groups <- function() {
   url <- 'https://api.powerbi.com/v1.0/myorg/groups/'
   header <- httr::add_headers(Authorization = paste("Bearer", token))
 
-  resp <- httr::GET(url, header)
+  resp <- get_request(url = url, header = header, simplifyVector = TRUE)
 
-  if (httr::http_error(resp)) stop(httr::content(resp), call. = FALSE)
-
-  resp <- httr::content(resp, "text", encoding = "UTF-8")
-  resp <- try(jsonlite::fromJSON(resp, simplifyVector = FALSE))
-
-  if (inherits(resp, "try-error")) {
-    stop("The Power BI API returned an empty value or the value could not be parsed.")
-  }
-
-  value <- data.table::rbindlist(resp$value)
-  data.table::setDF(value)
-
-  return(value)
-
+  return(resp$value)
 }
 
 #' Get a list of datasets in a workspace
@@ -62,13 +49,11 @@ pbi_list_datasets <- function(group_id) {
   url <- paste0('https://api.powerbi.com/v1.0/myorg/groups/', group_id ,'/datasets' )
   header <- httr::add_headers(Authorization = paste("Bearer", token))
 
-  resp <- get_request(url = url, header = header)
+  resp <- get_request(url = url, header = header, simplifyVector = TRUE)
 
-  value <- suppressWarnings( rbindlist(resp$value))
-  value[, group_id := group_id]
+  value <- resp$value
+  value$group_id <- group_id
 
-  data.table::setDF(value)
   return(value)
-
 }
 

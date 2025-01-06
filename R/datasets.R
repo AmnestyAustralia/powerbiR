@@ -24,7 +24,6 @@
 #' #> [1] "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 #' }
 pbi_dataset_refresh <- function(group_id, dataset_id) {
-
   token <- pbi_get_token()
 
   url <- paste0("https://api.powerbi.com/v1.0/myorg/groups/", group_id,"/datasets/", dataset_id, "/refreshes")
@@ -87,52 +86,39 @@ pbi_dataset_refresh_hist <- function(group_id,
                                      request_id = NULL) {
 
   # Due to notes in R CMD check
-  value=requestId <- serviceExceptionJson <- NULL
+  value = requestId <- serviceExceptionJson <- NULL
 
   token <- pbi_get_token()
 
   url <- paste0("https://api.powerbi.com/v1.0/myorg/groups/", group_id,"/datasets/", dataset_id)
 
-  if(!is.null(top)) {
-
+  if (!is.null(top)) {
     url <- paste0(url, "/refreshes?$top=", top) }
-
   else {
-
     url <- paste0("https://api.powerbi.com/v1.0/myorg/groups/", group_id,"/datasets/", dataset_id, "/refreshes/")
-
   }
 
   url <- utils::URLencode(url)
 
   header <- httr::add_headers(Authorization = paste("Bearer", token))
 
-  resp <- get_request(url = url, header = header)
+  resp <- get_request(url = url, header = header, simplifyVector = TRUE)
 
-  value <- suppressWarnings( rbindlist(resp$value, fill = TRUE))
-  value[, group_id := group_id]
+  value <- resp$value
+  value$group_id <- group_id
 
-  error_messages <- value[
-    !is.na(serviceExceptionJson),
-    rbindlist(lapply(serviceExceptionJson, jsonlite::fromJSON), use.names = TRUE, fill = TRUE),
-    by = list(requestId)]
+  value$serviceExceptionJson[!is.na(value$serviceExceptionJson)] <-
+    lapply(
+      value$serviceExceptionJson[!is.na(value$serviceExceptionJson)],
+      jsonlite::fromJSON
+    )
 
-  value <- merge(value, error_messages, all.x = TRUE, by = "requestId")
+  if (!is.null(request_id)) {
+    refresh_status <- value[value$requestId == request_id, ]$status
+    #message("Refresh status of ", request_id, ":\n", refresh_status)
 
-  if(!is.null(request_id)) {
-
-    refresh_status <- value[requestId == request_id]$status
-
-    message("Refresh status of ", request_id, ":\n", refresh_status)
-
-    return(refresh_status)
-
+    refresh_status
   } else {
-
-    data.table::setDF(value)
-    return(value)
-
+    value
   }
-
 }
-
