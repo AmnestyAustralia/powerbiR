@@ -1,4 +1,4 @@
-# powerbiR (development version)
+# powerbiR 0.2.0
 
 ## Breaking Changes
 
