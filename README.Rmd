@@ -91,7 +91,7 @@ pbi_auth(
   tenant = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", # The tenant ID
   app = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",    # The app ID
   password = "****"                                # The client secret
-  )
+)
 ```
 
 
@@ -112,7 +112,7 @@ PBI_PW = "****"                                       # The client secret
 By default `pbi_auth()` retrieves these variables using `Sys.getenv()`, which 
 means you can now authenticate without modifying the arguments of the function: 
 
-```{r, eval=FALSE}
+```{r, eval = FALSE}
 # Authentication with environment variables in the .Renviron file
 pbi_auth()
 ```
@@ -137,14 +137,14 @@ The powerbiR package automates this task as far as possible by inferring data
 types and generating list objects with definitions from the data frames you want 
 to push to Power BI.
 
-```{r, eval=FALSE}
+```{r, eval = FALSE}
 # Load the demo data included in this package
 data(dim_hour)
 data(fact_visitors)
 
 # Define the Power BI dataset with one or more data frames
 dataset_name <- c("Online Visitors")
-table_names  <- c("visitors", "hour")
+table_names <- c("visitors", "hour")
 table_list <- list(fact_visitors, dim_hour)
 
 # Define one or more relationships between tables (here only from_column is
@@ -154,17 +154,16 @@ relation <- list(
     from_table = "visitors",
     from_column = "hour_key",
     to_table = "hour"
-    )
   )
+)
 
 # Create the schema
- schema <- pbi_schema_create(
-   dt_list = table_list,
-   dataset_name = dataset_name,
-   table_name_list = table_names,
-   relations_list = relation
-   )
-
+schema <- pbi_schema_create(
+  dt_list = table_list,
+  dataset_name = dataset_name,
+  table_name_list = table_names,
+  relations_list = relation
+)
 ```
 
 This schema returns a list object designed to be converted into JSON and used as 
@@ -177,7 +176,7 @@ The next step is to upload the schema as an empty dataset to a Power BI
 workspace. Before doing so, you need to obtain the ID of the workspace you are 
 planning to push data to.
 
-```{r, eval=FALSE}
+```{r, eval = FALSE}
 # Get a data frame with workspaces available to the service principal
 # (workspaces are called "groups" in the API)
 groupid_df <- pbi_list_groups()
@@ -188,7 +187,7 @@ groupid <- groupid_df$id[1]
 
 You are now ready to upload the schema.
 
-```{r, eval=FALSE}
+```{r, eval = FALSE}
 # Push the schema to the specified workspace (groupid) in Power BI
 new_dataset_id <- pbi_push_dataset_schema(schema, groupid)
 #> Successfully added dataset schema to the workspace with ID xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
@@ -207,12 +206,12 @@ Power BI.
 # Using the new_dataset_id, iterate over the list of tables in the dataset
 for (i in seq_along(table_list)) {
   pbi_push_rows(
-    dt = table_list[[i]], 
-    group_id = group_id, 
-    dataset_id = new_dataset_id, 
+    dt = table_list[[i]],
+    group_id = group_id,
+    dataset_id = new_dataset_id,
     table_name = table_names[i],
     overwrite = FALSE
-    )
+  )
 }
 #> Successfully added 10000 rows to visitors
 #> Successfully added 33 rows to visitors

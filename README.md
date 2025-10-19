@@ -4,6 +4,7 @@
 # The powerbiR Package
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of this package is to make it easy to implement (near)
@@ -11,10 +12,10 @@ real-time dashboards using R and the Power BI REST APIs.
 
 The following workflow is supported:
 
--   Create a Power BI dataset schema from a list of data frames
--   Upload this schema as an empty dataset to a Power BI workspace
--   Populate the dataset with data
--   Append new data at short intervals to the dataset
+- Create a Power BI dataset schema from a list of data frames
+- Upload this schema as an empty dataset to a Power BI workspace
+- Populate the dataset with data
+- Append new data at short intervals to the dataset
 
 The package includes a set of functions for managing administrative
 tasks such as getting a list of datasets, refreshing imported datasets,
@@ -35,14 +36,8 @@ Friday.
 
 ## Installation
 
-You can install the released version of `powerbiR` from
-[CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("powerbiR")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+You can install the development version of powerbiR from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -57,14 +52,14 @@ create an Azure AD Security Group and the Power BI Admin role.
 
 The overall steps are:
 
--   Create a service principal (app registration) in Azure, including a
-    client secret, and add it to a security group
--   Enable service principals to use Power BI APIs in the Power BI Admin
-    Portal and apply this setting to the security group
--   Add the service principal (the app) as a member of the Power BI
-    workspaces to which you want to push data
--   Use the tenant ID, app ID and client secret of the service principal
-    to authenticate with `pbi_auth()`
+- Create a service principal (app registration) in Azure, including a
+  client secret, and add it to a security group
+- Enable service principals to use Power BI APIs in the Power BI Admin
+  Portal and apply this setting to the security group
+- Add the service principal (the app) as a member of the Power BI
+  workspaces to which you want to push data
+- Use the tenant ID, app ID and client secret of the service principal
+  to authenticate with `pbi_auth()`
 
 The client secret is available immediately after creating it during app
 registration. The tenant and app IDs can be found on the overview page
@@ -87,7 +82,7 @@ pbi_auth(
   tenant = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", # The tenant ID
   app = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",    # The app ID
   password = "****"                                # The client secret
-  )
+)
 ```
 
 #### Using environment variables
@@ -142,7 +137,7 @@ data(fact_visitors)
 
 # Define the Power BI dataset with one or more data frames
 dataset_name <- c("Online Visitors")
-table_names  <- c("visitors", "hour")
+table_names <- c("visitors", "hour")
 table_list <- list(fact_visitors, dim_hour)
 
 # Define one or more relationships between tables (here only from_column is
@@ -152,16 +147,16 @@ relation <- list(
     from_table = "visitors",
     from_column = "hour_key",
     to_table = "hour"
-    )
   )
+)
 
 # Create the schema
- schema <- pbi_schema_create(
-   dt_list = table_list,
-   dataset_name = dataset_name,
-   table_name_list = table_names,
-   relations_list = relation
-   )
+schema <- pbi_schema_create(
+  dt_list = table_list,
+  dataset_name = dataset_name,
+  table_name_list = table_names,
+  relations_list = relation
+)
 ```
 
 This schema returns a list object designed to be converted into JSON and
@@ -202,12 +197,12 @@ in Power BI.
 # Using the new_dataset_id, iterate over the list of tables in the dataset
 for (i in seq_along(table_list)) {
   pbi_push_rows(
-    dt = table_list[[i]], 
-    group_id = group_id, 
-    dataset_id = new_dataset_id, 
+    dt = table_list[[i]],
+    group_id = group_id,
+    dataset_id = new_dataset_id,
     table_name = table_names[i],
     overwrite = FALSE
-    )
+  )
 }
 #> Successfully added 10000 rows to visitors
 #> Successfully added 33 rows to visitors
