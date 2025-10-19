@@ -21,8 +21,6 @@ Imports:
     httr,
     jsonlite,
     utils
-Suggests: 
-    spelling
 Encoding: UTF-8
 Language: en-US
 LazyData: true
