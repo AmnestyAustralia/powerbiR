@@ -10,7 +10,7 @@ pbi_list_datasets(group_id)
 \item{group_id}{The Power BI workspace ID.}
 }
 \value{
-A data.table / data frame with dataset information.
+A data frame with dataset information.
 }
 \description{
 Returns the IDs and meta data of all available datasets in the specified

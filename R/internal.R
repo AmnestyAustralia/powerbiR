@@ -66,32 +66,50 @@ pbi_schema_column_prop <- function(
   dob_index <- which(data_types == "Double")
   format_string[dob_index] <- double_format
 
-  table <- jsonlite::unbox(data.table::data.table(
+  table <- jsonlite::unbox(data.frame(
     name = table_name,
-    columns = list(
-      data.table::data.table(
+    columns = I(list(
+      data.frame(
         name = cols,
         dataType = data_types,
-        formatString = format_string
+        formatString = format_string,
+        stringsAsFactors = FALSE
       )
-    )
+    )),
+    stringsAsFactors = FALSE
   ))
 
   if (!is.null(attr(dt, "sort_by_cols"))) {
     sort_by_cols <- attr(dt, "sort_by_cols")
-    table$columns[[1]] <- sort_by_cols[table$columns[[1]], on = "name"]
+    table$columns[[1]] <- merge(
+      sort_by_cols,
+      table$columns[[1]],
+      by = "name",
+      all.y = TRUE,
+      sort = FALSE
+    )
   }
 
   if (!is.null(attr(dt, "hidden_cols"))) {
     hidden_cols <- attr(dt, "hidden_cols")
-    table$columns[[1]] <- hidden_cols[table$columns[[1]], on = "name"]
+    table$columns[[1]] <- merge(
+      hidden_cols,
+      table$columns[[1]],
+      by = "name",
+      all.y = TRUE,
+      sort = FALSE
+    )
   }
 
   table
 }
 
 pbi_schema_sort <- function(dt, sort = NULL, sort_by = NULL) {
-  sorttbl <- data.table(name = sort, sortByColumn = sort_by)
+  sorttbl <- data.frame(
+    name = sort,
+    sortByColumn = sort_by,
+    stringsAsFactors = FALSE
+  )
   attr(dt, "sort_by_cols") <- sorttbl
 
   dt
@@ -99,7 +117,7 @@ pbi_schema_sort <- function(dt, sort = NULL, sort_by = NULL) {
 
 
 pbi_schema_hidden <- function(dt, hidden = NULL) {
-  hidtbl <- data.table(name = hidden, isHidden = TRUE)
+  hidtbl <- data.frame(name = hidden, isHidden = TRUE, stringsAsFactors = FALSE)
   attr(dt, "hidden_cols") <- hidtbl
 
   dt

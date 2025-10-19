@@ -23,7 +23,6 @@
 #'   include elements named 'table' and 'hidden'. See examples for more details.
 #' @param default_mode The dataset mode or type. Defaults to 'Push'.
 #'
-#' @import data.table
 #' @return A list with schema properties.
 #' @export
 #'
@@ -123,7 +122,9 @@ pbi_schema_create <- function(
     double_format = double_format
   )
 
-  Map(function(x, y, name) x[, name := y], dt_list, y = table_name_list)
+  for (i in seq_along(dt_list)) {
+    dt_list[[i]]$name <- table_name_list[[i]]
+  }
 
   default_mode <- match.arg(default_mode)
 
@@ -162,7 +163,7 @@ pbi_schema_create <- function(
 #' @param name The relationship name and identifier. Defaults to a concatenation
 #'   of from_table, to_table and from_column
 #'
-#' @return A data.table
+#' @return A data frame
 #' @export
 #'
 #' @examples
@@ -189,13 +190,14 @@ pbi_schema_relation_create <- function(
 
   direction <- match.arg(direction)
 
-  data.table::data.table(
-    name,
+  data.frame(
+    name = name,
     fromTable = from_table,
     fromColumn = from_column,
     toTable = to_table,
     toColumn = to_column,
-    crossFilteringBehavior = direction
+    crossFilteringBehavior = direction,
+    stringsAsFactors = FALSE
   )
 }
 

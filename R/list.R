@@ -30,7 +30,7 @@ pbi_list_groups <- function() {
 #'
 #' @param group_id The Power BI workspace ID.
 #'
-#' @return A data.table / data frame with dataset information.
+#' @return A data frame with dataset information.
 #' @export
 #'
 #' @examples

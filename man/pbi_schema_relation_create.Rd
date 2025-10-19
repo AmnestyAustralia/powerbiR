@@ -29,7 +29,7 @@ pbi_schema_relation_create(
 of from_table, to_table and from_column}
 }
 \value{
-A data.table
+A data frame
 }
 \description{
 Defines a relationship between tables in a Power BI push dataset. To add this
