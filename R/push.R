@@ -25,16 +25,23 @@
 #'
 #' pbi_push_dataset_schema(schema, group_id)
 #' }
-pbi_push_dataset_schema <- function(schema,
-                                    group_id,
-                                    retention = c("none", "basicFIFO")) {
-
+pbi_push_dataset_schema <- function(
+  schema,
+  group_id,
+  retention = c("none", "basicFIFO")
+) {
   retention <- match.arg(retention)
 
   token <- pbi_get_token()
 
-  url <- paste0("https://api.powerbi.com/v1.0/myorg/groups/", group_id,"/datasets")
-  if(retention == "basicFIFO") {url <- paste0(url, "?defaultRetentionPolicy=basicFIFO")}
+  url <- paste0(
+    "https://api.powerbi.com/v1.0/myorg/groups/",
+    group_id,
+    "/datasets"
+  )
+  if (retention == "basicFIFO") {
+    url <- paste0(url, "?defaultRetentionPolicy=basicFIFO")
+  }
   url <- utils::URLencode(url)
 
   header <- httr::add_headers(Authorization = paste("Bearer", token))
@@ -42,20 +49,17 @@ pbi_push_dataset_schema <- function(schema,
   resp <- httr::POST(url, header, body = schema, encode = "json")
 
   if (httr::http_error(resp)) {
-
     stop(httr::content(resp), call. = FALSE)
-
   } else {
-
     pushed_dataset_id <- httr::content(resp)$id
-
   }
 
-  message("Successfully added dataset schema to the workspace with ID ",
-          group_id )
+  message(
+    "Successfully added dataset schema to the workspace with ID ",
+    group_id
+  )
 
   return(pushed_dataset_id)
-
 }
 
 
@@ -91,15 +95,18 @@ pbi_push_dataset_schema <- function(schema,
 #'
 #' pbi_push_rows(group_id, dataset_id, "My table")
 #' }
-pbi_push_rows <- function(dt,
-                          group_id,
-                          dataset_id,
-                          table_name,
-                          overwrite = FALSE) {
+pbi_push_rows <- function(
+  dt,
+  group_id,
+  dataset_id,
+  table_name,
+  overwrite = FALSE
+) {
+  if (overwrite) {
+    pbi_delete_rows(group_id, dataset_id, table_name)
+  }
 
-  if(overwrite) pbi_delete_rows(group_id, dataset_id, table_name)
-
-  push_list <- split(dt, (as.numeric(rownames(dt))-1) %/% 10000)
+  push_list <- split(dt, (as.numeric(rownames(dt)) - 1) %/% 10000)
 
   return(invisible(
     lapply(
@@ -108,8 +115,6 @@ pbi_push_rows <- function(dt,
       group_id = group_id,
       dataset_id = dataset_id,
       table_name = table_name
-      )
     )
-  )
-
+  ))
 }

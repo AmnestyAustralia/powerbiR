@@ -48,7 +48,7 @@
 #' )
 #'
 #' # Define sorting behavior of columns in the hour table
-#' sortlist = list(
+#' sortlist <- list(
 #'   table = c("hour"),
 #'   sort = c("hour"),
 #'   sort_by = c("hour_key")
@@ -85,31 +85,33 @@ pbi_schema_create <- function(
   double_format = "#,###.00",
   sort_by_col = NULL,
   hidden_col = NULL,
-  default_mode = c("Push", "Streaming", "PushStreaming", "AsOnPrem",
-                   "AsAzure")) {
-
-  if(!is.null(sort_by_col)) {
-
+  default_mode = c("Push", "Streaming", "PushStreaming", "AsOnPrem", "AsAzure")
+) {
+  if (!is.null(sort_by_col)) {
     for (i in seq_along(sort_by_col)) {
-
       tbl_index <- which(table_name_list %in% sort_by_col[[i]]$table)
 
       sort <- sort_by_col[[i]]$sort
       sort_by <- sort_by_col[[i]]$sort_by
 
-      dt_list[[tbl_index]] <- pbi_schema_sort(dt_list[[tbl_index]], sort = sort, sort_by = sort_by)
+      dt_list[[tbl_index]] <- pbi_schema_sort(
+        dt_list[[tbl_index]],
+        sort = sort,
+        sort_by = sort_by
+      )
     }
   }
 
-  if(!is.null(hidden_col)) {
-
+  if (!is.null(hidden_col)) {
     for (i in seq_along(hidden_col)) {
-
       tbl_index <- which(table_name_list %in% hidden_col[[i]]$table)
 
       hidden <- hidden_col[[i]]$hidden
 
-      dt_list[[tbl_index]] <- pbi_schema_hidden(dt_list[[tbl_index]], hidden = hidden)
+      dt_list[[tbl_index]] <- pbi_schema_hidden(
+        dt_list[[tbl_index]],
+        hidden = hidden
+      )
     }
   }
 
@@ -132,8 +134,9 @@ pbi_schema_create <- function(
   )
 
   if (!is.null(relations_list)) {
-
-    if(!is.list(relations_list)) stop("relations_list is not an object of class 'list'")
+    if (!is.list(relations_list)) {
+      stop("relations_list is not an object of class 'list'")
+    }
 
     dt_list <- pbi_schema_add_relations(
       schema = dt_list,
@@ -164,16 +167,25 @@ pbi_schema_create <- function(
 #'
 #' @examples
 #' # An example
-pbi_schema_relation_create <- function(from_table = NULL,
-                                       from_column = NULL,
-                                       to_table = NULL,
-                                       to_column = from_column,
-                                       direction = c("OneDirection", "BothDirections", "Automatic"),
-                                       name = paste0(from_table, to_table, from_column)) {
-
-  if(is.null(from_table)) stop("Please specify the table from which the relationship starts (from_table)")
-  if(is.null(from_column)) stop("Please specify the joining key column in the 'from_table'")
-  if(is.null(to_table)) stop("Please specify the table at which the relationship ends (to_table)")
+pbi_schema_relation_create <- function(
+  from_table = NULL,
+  from_column = NULL,
+  to_table = NULL,
+  to_column = from_column,
+  direction = c("OneDirection", "BothDirections", "Automatic"),
+  name = paste0(from_table, to_table, from_column)
+) {
+  if (is.null(from_table)) {
+    stop(
+      "Please specify the table from which the relationship starts (from_table)"
+    )
+  }
+  if (is.null(from_column)) {
+    stop("Please specify the joining key column in the 'from_table'")
+  }
+  if (is.null(to_table)) {
+    stop("Please specify the table at which the relationship ends (to_table)")
+  }
 
   direction <- match.arg(direction)
 

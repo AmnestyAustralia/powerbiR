@@ -75,7 +75,7 @@ relation <- pbi_schema_relation_create(
 )
 
 # Define sorting behavior of columns in the hour table
-sortlist = list(
+sortlist <- list(
   table = c("hour"),
   sort = c("hour"),
   sort_by = c("hour_key")

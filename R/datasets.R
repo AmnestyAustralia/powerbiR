@@ -26,19 +26,31 @@
 pbi_dataset_refresh <- function(group_id, dataset_id) {
   token <- pbi_get_token()
 
-  url <- paste0("https://api.powerbi.com/v1.0/myorg/groups/", group_id,"/datasets/", dataset_id, "/refreshes")
+  url <- paste0(
+    "https://api.powerbi.com/v1.0/myorg/groups/",
+    group_id,
+    "/datasets/",
+    dataset_id,
+    "/refreshes"
+  )
   url <- utils::URLencode(url)
 
-  header <- httr::add_headers(Authorization = paste("Bearer", token) )
+  header <- httr::add_headers(Authorization = paste("Bearer", token))
 
   resp <- httr::POST(url, header, httr::content_type_json())
 
-  if (httr::http_error(resp)) {stop(httr::content(resp), call. = FALSE)}
+  if (httr::http_error(resp)) {
+    stop(httr::content(resp), call. = FALSE)
+  }
 
-  message("\nA refresh of dataset ", dataset_id, " was triggered.\n\n",
-          "To check status, use pbi_dataset_refresh_hist() and the request ID returned\nby this function.\n")
+  message(
+    "\nA refresh of dataset ",
+    dataset_id,
+    " was triggered.\n\n",
+    "To check status, use pbi_dataset_refresh_hist() and the request ID returned\nby this function.\n"
+  )
 
-  return(resp[["headers"]][["requestid"]])
+  resp[["headers"]][["requestid"]]
 }
 
 #' Refresh history of a dataset
@@ -80,22 +92,31 @@ pbi_dataset_refresh <- function(group_id, dataset_id) {
 #'
 #' pbi_dataset_refresh_hist(group_id, dataset_id)
 #' }
-pbi_dataset_refresh_hist <- function(group_id,
-                                     dataset_id,
-                                     top = NULL,
-                                     request_id = NULL) {
-
-  # Due to notes in R CMD check
-  value = requestId <- serviceExceptionJson <- NULL
-
+pbi_dataset_refresh_hist <- function(
+  group_id,
+  dataset_id,
+  top = NULL,
+  request_id = NULL
+) {
   token <- pbi_get_token()
 
-  url <- paste0("https://api.powerbi.com/v1.0/myorg/groups/", group_id,"/datasets/", dataset_id)
+  url <- paste0(
+    "https://api.powerbi.com/v1.0/myorg/groups/",
+    group_id,
+    "/datasets/",
+    dataset_id
+  )
 
   if (!is.null(top)) {
-    url <- paste0(url, "/refreshes?$top=", top) }
-  else {
-    url <- paste0("https://api.powerbi.com/v1.0/myorg/groups/", group_id,"/datasets/", dataset_id, "/refreshes/")
+    url <- paste0(url, "/refreshes?$top=", top)
+  } else {
+    url <- paste0(
+      "https://api.powerbi.com/v1.0/myorg/groups/",
+      group_id,
+      "/datasets/",
+      dataset_id,
+      "/refreshes/"
+    )
   }
 
   url <- utils::URLencode(url)
@@ -115,7 +136,6 @@ pbi_dataset_refresh_hist <- function(group_id,
 
   if (!is.null(request_id)) {
     refresh_status <- value[value$requestId == request_id, ]$status
-    #message("Refresh status of ", request_id, ":\n", refresh_status)
 
     refresh_status
   } else {

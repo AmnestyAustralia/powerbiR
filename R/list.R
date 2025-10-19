@@ -13,15 +13,14 @@
 #' pbi_list_groups()
 #' }
 pbi_list_groups <- function() {
-
   token <- pbi_get_token()
 
-  url <- 'https://api.powerbi.com/v1.0/myorg/groups/'
+  url <- "https://api.powerbi.com/v1.0/myorg/groups/"
   header <- httr::add_headers(Authorization = paste("Bearer", token))
 
   resp <- get_request(url = url, header = header, simplifyVector = TRUE)
 
-  return(resp$value)
+  resp$value
 }
 
 #' Get a list of datasets in a workspace
@@ -43,10 +42,13 @@ pbi_list_groups <- function() {
 #' pbi_list_datasets(group_id)
 #' }
 pbi_list_datasets <- function(group_id) {
-
   token <- pbi_get_token()
 
-  url <- paste0('https://api.powerbi.com/v1.0/myorg/groups/', group_id ,'/datasets' )
+  url <- paste0(
+    "https://api.powerbi.com/v1.0/myorg/groups/",
+    group_id,
+    "/datasets"
+  )
   header <- httr::add_headers(Authorization = paste("Bearer", token))
 
   resp <- get_request(url = url, header = header, simplifyVector = TRUE)
@@ -54,6 +56,5 @@ pbi_list_datasets <- function(group_id) {
   value <- resp$value
   value$group_id <- group_id
 
-  return(value)
+  value
 }
-
